@@ -3,3 +3,57 @@
 }
 
 
+<div class="container-form">
+    <div class="form-body">
+        <h1>
+            Crie sua promoção
+        </h1>
+        <form id="sale-form">
+            <input type="text" class="form-input" placeholder="Empresa" id="Company">
+            <input type="text" class="form-input" placeholder="Chamada" id="Call">
+            <input type="text" class="form-input" placeholder="Regras" id="Rules">
+            <input type="text" class="form-input" placeholder="Endereço" id="Url"> 
+        </form>  
+    </div>
+    <div class="form-actions">
+        <input type="button" class="sale-btn" value="cadastrar" id="btn-create">
+    </div>
+</div>
+
+<div class="hero">
+    <h1>As melhores promoções</h1>
+</div>
+
+@section Scripts 
+{
+    <script>
+        
+        var conn = new signalR.HubConnectionBuilder().withUrl("/SaleHub").build();
+
+        conn.start().then(function () {
+            console.info("Connected")
+        }).catch(function(err) {
+            console.error(err.toString())
+        })
+
+        var btn = document.getElementById("btn-create")
+        
+        btn.addEventListener("click", function() {
+            
+            var company = document.getElementById("Company").value;
+            var call = document.getElementById("Call").value;
+            var rules = document.getElementById("Rules").value;
+            var url = document.getElementById("Url").value;
+
+            var sale = { company, call, rules, url }
+
+            conn.invoke("CreatePromo", sale).then(function () {
+                console.info("Connected")
+            }).catch(function (err) {
+                console.error(err.toString())
+            });
+
+        })
+
+    </script>
+}

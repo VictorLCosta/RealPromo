@@ -52,7 +52,7 @@ namespace Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                endpoints.MapHub<SaleHub>("/PromoHub");
+                endpoints.MapHub<SaleHub>("/SaleHub");
             });
 
         }
