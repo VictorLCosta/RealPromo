@@ -8,7 +8,8 @@ namespace RealPromo.Web.SignalR.Hubs
     {
         public async Task CreatePromo(Sale sale)
         {
-            
+            await Clients.Caller.SendAsync("CreateSuccess");
+            await Clients.Others.SendAsync("ReceiveSale", sale);
         }
     }
 }
