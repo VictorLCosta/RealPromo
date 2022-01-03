@@ -18,6 +18,9 @@
     <div class="form-actions">
         <input type="button" class="sale-btn" value="cadastrar" id="btn-create">
     </div>
+    <div id="response">
+
+    </div>
 </div>
 
 <div class="hero">
@@ -53,6 +56,11 @@
                 console.error(err.toString())
             });
 
+        })
+
+        conn.on("ReceiveSale", function(sale) {
+            var response = document.getElementById("response")
+            response.innerText = sale.call
         })
 
     </script>
