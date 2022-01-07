@@ -12,8 +12,8 @@
             <input type="text" class="form-input" placeholder="Empresa" id="Company">
             <input type="text" class="form-input" placeholder="Chamada" id="Call">
             <input type="text" class="form-input" placeholder="Regras" id="Rules">
-            <input type="text" class="form-input" placeholder="Endereço" id="Url"> 
-        </form>  
+            <input type="text" class="form-input" placeholder="Endereço" id="Url">
+        </form>
     </div>
     <div class="form-actions">
         <input type="button" class="sale-btn" value="cadastrar" id="btn-create">
@@ -27,41 +27,74 @@
     <h1>As melhores promoções</h1>
 </div>
 
-@section Scripts 
+@section Scripts
 {
-    <script>
-        
-        var conn = new signalR.HubConnectionBuilder().withUrl("/SaleHub").build();
+<script>
 
-        conn.start().then(function () {
+    var conn = new signalR.HubConnectionBuilder().withUrl("/SaleHub").build();
+
+    conn.start().then(function () {
+        console.info("Connected")
+    }).catch(function (err) {
+        console.error(err.toString())
+    })
+
+    var btn = document.getElementById("btn-create")
+
+    btn.addEventListener("click", function () {
+
+        var company = document.getElementById("Company").value;
+        var call = document.getElementById("Call").value;
+        var rules = document.getElementById("Rules").value;
+        var url = document.getElementById("Url").value;
+
+        var sale = { company, call, rules, url }
+
+        conn.invoke("CreatePromo", sale).then(function () {
             console.info("Connected")
-        }).catch(function(err) {
+        }).catch(function (err) {
             console.error(err.toString())
-        })
+        });
 
-        var btn = document.getElementById("btn-create")
-        
-        btn.addEventListener("click", function() {
-            
-            var company = document.getElementById("Company").value;
-            var call = document.getElementById("Call").value;
-            var rules = document.getElementById("Rules").value;
-            var url = document.getElementById("Url").value;
+    })
 
-            var sale = { company, call, rules, url }
+    conn.on("ReceiveSale", function (sale) {
+        var containerLogin = document.getElementById("container-login");
 
-            conn.invoke("CreatePromo", sale).then(function () {
-                console.info("Connected")
-            }).catch(function (err) {
-                console.error(err.toString())
-            });
+        var containerPromo = document.createElement("div");
+        containerPromo.setAttribute("class", "container-promo");
 
-        })
+        var containerChamada = document.createElement("div");
+        containerChamada.setAttribute("class", "container-chamada");
 
-        conn.on("ReceiveSale", function(sale) {
-            var response = document.getElementById("response")
-            response.innerText = sale.call
-        })
+        var h1Titulo = document.createElement("h1");
+        h1Titulo.innerHTML = promocao.empresa;
 
-    </script>
+        var p1 = document.createElement("p");
+        p1.innerText = promocao.chamada;
+
+        var p2 = document.createElement("p");
+        p2.innerText = promocao.regras;
+
+        var containerBotao = document.createElement("div");
+        containerBotao.setAttribute("class", "container-botao");
+
+        var link = document.createElement("a");
+        link.setAttribute("href", promocao.enderecoURL);
+        link.setAttribute("target", "_blank");
+        link.innerText = "Pegar";
+
+        containerChamada.appendChild(h1Titulo);
+        containerChamada.appendChild(p1);
+        containerChamada.appendChild(p2);
+
+        containerBotao.appendChild(link);
+
+        containerPromo.appendChild(containerChamada);
+        containerPromo.appendChild(containerBotao);
+
+        containerLogin.appendChild(containerPromo);
+    })
+
+</script>
 }
